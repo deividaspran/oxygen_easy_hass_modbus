@@ -1,0 +1,236 @@
+{
+  "title": "Oxygen Easy Modbus",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Oxygen Modbus",
+        "description": "Enter the transparent TCP converter endpoint connected to controller COM3.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "device_id": "Modbus device address"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect or read the controller",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This converter and device address are already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Connection options",
+        "data": {
+          "scan_interval": "Polling interval (seconds)",
+          "timeout": "Request timeout (seconds)",
+          "message_wait_ms": "Delay between Modbus messages (milliseconds)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "running": {
+        "name": "Running"
+      },
+      "fault": {
+        "name": "Fault"
+      },
+      "bypass_active": {
+        "name": "Bypass active"
+      },
+      "alarm_input": {
+        "name": "Alarm input"
+      },
+      "settings_writable": {
+        "name": "Setting writes allowed"
+      },
+      "power_writable": {
+        "name": "Start/stop writes allowed"
+      }
+    },
+    "sensor": {
+      "firmware": {
+        "name": "Firmware"
+      },
+      "supply_temperature": {
+        "name": "Supply temperature"
+      },
+      "extract_temperature": {
+        "name": "Extract temperature"
+      },
+      "outdoor_temperature": {
+        "name": "Outdoor temperature"
+      },
+      "exhaust_temperature": {
+        "name": "Exhaust temperature"
+      },
+      "ground_heat_exchanger_temperature": {
+        "name": "Ground heat exchanger temperature"
+      },
+      "secondary_heater_temperature": {
+        "name": "Secondary-heater temperature"
+      },
+      "panel_temperature": {
+        "name": "Control-panel temperature"
+      },
+      "heater_output": {
+        "name": "Heater output"
+      },
+      "cooler_output": {
+        "name": "Cooler output"
+      },
+      "bypass_opening": {
+        "name": "Bypass opening"
+      },
+      "humidity": {
+        "name": "Humidity"
+      },
+      "co2": {
+        "name": "CO₂"
+      },
+      "supply_fan": {
+        "name": "Supply fan"
+      },
+      "extract_fan": {
+        "name": "Extract fan"
+      },
+      "supply_filter_days": {
+        "name": "Supply filter replacement interval"
+      },
+      "extract_filter_days": {
+        "name": "Extract filter replacement interval"
+      },
+      "supply_filter_usage": {
+        "name": "Supply filter usage"
+      },
+      "extract_filter_usage": {
+        "name": "Extract filter usage"
+      },
+      "supply_airflow": {
+        "name": "Supply airflow"
+      },
+      "extract_airflow": {
+        "name": "Extract airflow"
+      }
+    },
+    "switch": {
+      "power": {
+        "name": "Power"
+      },
+      "airing": {
+        "name": "Airing mode"
+      },
+      "away": {
+        "name": "Away mode"
+      },
+      "party": {
+        "name": "Party mode"
+      },
+      "fireplace": {
+        "name": "Fireplace mode"
+      },
+      "schedule": {
+        "name": "Schedule"
+      },
+      "automatic": {
+        "name": "Automatic mode"
+      },
+      "boost_1": {
+        "name": "Boost 1"
+      },
+      "boost_2": {
+        "name": "Boost 2"
+      }
+    },
+    "number": {
+      "party_duration": {
+        "name": "Party mode duration"
+      },
+      "day_comfort_temperature": {
+        "name": "Day comfort temperature"
+      },
+      "night_comfort_temperature": {
+        "name": "Night comfort temperature"
+      },
+      "supply_low_speed": {
+        "name": "Supply low speed"
+      },
+      "supply_medium_speed": {
+        "name": "Supply medium speed"
+      },
+      "supply_high_speed": {
+        "name": "Supply high speed"
+      },
+      "extract_low_speed": {
+        "name": "Extract low speed"
+      },
+      "extract_medium_speed": {
+        "name": "Extract medium speed"
+      },
+      "extract_high_speed": {
+        "name": "Extract high speed"
+      },
+      "supply_airflow_setpoint": {
+        "name": "Supply airflow setpoint"
+      },
+      "extract_airflow_setpoint": {
+        "name": "Extract airflow setpoint"
+      }
+    },
+    "select": {
+      "fan_level": {
+        "name": "Fan level",
+        "state": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High"
+        }
+      },
+      "season": {
+        "name": "Season mode",
+        "state": {
+          "summer": "Summer",
+          "winter": "Winter",
+          "automatic": "Automatic"
+        }
+      },
+      "comfort_mode": {
+        "name": "Comfort mode",
+        "state": {
+          "schedule": "Schedule",
+          "day": "Day",
+          "night": "Night"
+        }
+      },
+      "ground_heat_exchanger_mode": {
+        "name": "Ground heat exchanger mode",
+        "state": {
+          "off": "Off",
+          "on": "On",
+          "automatic": "Automatic"
+        }
+      },
+      "bypass_mode": {
+        "name": "Bypass mode",
+        "state": {
+          "off": "Off",
+          "on": "On",
+          "automatic": "Automatic"
+        }
+      },
+      "airflow_adjustment_mode": {
+        "name": "Airflow adjustment mode",
+        "state": {
+          "speed": "Fan speed",
+          "constant_pressure": "Constant pressure",
+          "constant_airflow": "Constant airflow"
+        }
+      }
+    }
+  }
+}

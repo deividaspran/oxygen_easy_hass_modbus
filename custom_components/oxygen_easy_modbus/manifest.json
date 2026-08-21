@@ -1,0 +1,13 @@
+{
+  "domain": "oxygen_easy_modbus",
+  "name": "Oxygen Easy Modbus",
+  "codeowners": ["@deividaspran"],
+  "config_flow": true,
+  "documentation": "https://github.com/deividaspran/oxygen_easy_hass_modbus",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/deividaspran/oxygen_easy_hass_modbus/issues",
+  "loggers": ["pymodbus"],
+  "requirements": ["pymodbus==3.13.1"],
+  "version": "0.1.0"
+}

@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest a controller feature or entity
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+    validations:
+      required: true
+  - type: textarea
+    id: protocol
+    attributes:
+      label: Authorized protocol details
+      description: Include address, values, model, and firmware if known.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety
+      options:
+        - label: This does not require a destructive command such as factory reset.
+          required: true

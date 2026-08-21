@@ -1,0 +1,8 @@
+{
+  "name": "Oxygen Easy Modbus",
+  "content_in_root": false,
+  "filename": "oxygen_easy_modbus.zip",
+  "homeassistant": "2024.12.0",
+  "render_readme": true,
+  "zip_release": true
+}
