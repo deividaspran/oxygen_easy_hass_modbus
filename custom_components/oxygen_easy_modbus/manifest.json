@@ -9,5 +9,5 @@
   "issue_tracker": "https://github.com/deividaspran/oxygen_easy_hass_modbus/issues",
   "loggers": ["pymodbus"],
   "requirements": ["pymodbus==3.13.1"],
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

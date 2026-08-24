@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0
 
 - Add supply, extract, and combined filter-counter reset buttons using Oxygen's
   documented register 88 commands.
