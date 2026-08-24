@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import timedelta
 
@@ -14,12 +15,22 @@ from .api import OxygenModbusClient
 from .const import (
     DOMAIN,
     POLL_BLOCKS,
+    REGISTER_EXTRACT_FILTER_USAGE,
+    REGISTER_FILTER_RESET,
     REGISTER_POWER_WRITABLE,
     REGISTER_SETTINGS_WRITABLE,
+    REGISTER_SUPPLY_FILTER_USAGE,
 )
-from .exceptions import OxygenModbusError
+from .exceptions import OxygenModbusError, OxygenModbusWriteError
+from .registers import filter_reset_confirmed
 
 _LOGGER = logging.getLogger(__name__)
+
+FILTER_RESET_TARGETS: dict[int, tuple[int, ...]] = {
+    2: (REGISTER_SUPPLY_FILTER_USAGE,),
+    3: (REGISTER_EXTRACT_FILTER_USAGE,),
+    7: (REGISTER_SUPPLY_FILTER_USAGE, REGISTER_EXTRACT_FILTER_USAGE),
+}
 
 
 class OxygenModbusCoordinator(DataUpdateCoordinator[dict[int, int]]):
@@ -54,24 +65,64 @@ class OxygenModbusCoordinator(DataUpdateCoordinator[dict[int, int]]):
     def _update_filter_notification(self, data: dict[int, int]) -> None:
         """Keep one persistent notification while either filter is exhausted."""
         worn = [
-            name
-            for name, address in (("supply", 86), ("extract", 87))
+            (name, data[address])
+            for name, address in (
+                ("supply", REGISTER_SUPPLY_FILTER_USAGE),
+                ("extract", REGISTER_EXTRACT_FILTER_USAGE),
+            )
             if data.get(address, 0) >= 100
         ]
         notification_id = f"{DOMAIN}_filters_{self.config_entry.entry_id}"
         if worn:
+            usage = " and ".join(f"{name} {value}%" for name, value in worn)
             persistent_notification.async_create(
                 self.hass,
-                "Replace the "
-                + " and ".join(worn)
-                + " air filter"
-                + ("s" if len(worn) > 1 else "")
-                + ". The controller reports 100% filter usage.",
+                (
+                    f"Filter usage is {usage}. Replace the indicated air "
+                    "filter or filters, then use the corresponding reset button."
+                ),
                 title="Oxygen ventilation filters need replacement",
                 notification_id=notification_id,
             )
         else:
             persistent_notification.async_dismiss(self.hass, notification_id)
+
+    async def async_reset_filters(self, command: int) -> None:
+        """Reset filter counters and confirm the affected usage readings change."""
+        try:
+            targets = FILTER_RESET_TARGETS[command]
+        except KeyError as err:
+            raise ValueError(f"Unsupported filter reset command: {command}") from err
+
+        before = {address: self.value(address) for address in targets}
+        await self.client.async_write_command(REGISTER_FILTER_RESET, command)
+
+        latest: dict[int, int] = {}
+        for _attempt in range(6):
+            await asyncio.sleep(0.5)
+            latest = await self.client.async_read_blocks(
+                ((REGISTER_SUPPLY_FILTER_USAGE, 2),)
+            )
+            if all(
+                filter_reset_confirmed(before[address], latest.get(address))
+                for address in targets
+            ):
+                updated = dict(self.data or {})
+                updated.update(latest)
+                self._update_filter_notification(updated)
+                self.async_set_updated_data(updated)
+                await self.async_request_refresh()
+                return
+
+        if latest:
+            updated = dict(self.data or {})
+            updated.update(latest)
+            self._update_filter_notification(updated)
+            self.async_set_updated_data(updated)
+        raise OxygenModbusWriteError(
+            "The controller acknowledged the filter reset command, but the "
+            "affected filter usage did not decrease"
+        )
 
     async def async_set_register(self, address: int, value: int) -> None:
         """Write, verify, preserve state continuity, then refresh all data."""

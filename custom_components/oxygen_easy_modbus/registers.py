@@ -18,3 +18,10 @@ def firmware_version(value: int | None) -> str | None:
     if value is None:
         return None
     return f"S{value >> 8:03d}.{value & 0xFF:02d}"
+
+
+def filter_reset_confirmed(before: int | None, after: int | None) -> bool:
+    """Return whether a filter usage counter reflects a successful reset."""
+    if after is None:
+        return False
+    return after <= 5 or before is not None and after < before

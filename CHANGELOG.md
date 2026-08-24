@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Add supply, extract, and combined filter-counter reset buttons using Oxygen's
+  documented register 88 commands.
+- Include current filter usage percentages in persistent replacement reminders.
+
 ## 0.1.0
 
 - Add UI setup for local Modbus RTU-over-TCP connections.

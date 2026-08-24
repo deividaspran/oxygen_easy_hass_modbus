@@ -22,6 +22,7 @@ MODEL = "ecoVENT ventilation controller"
 
 PLATFORMS: tuple[Platform, ...] = (
     Platform.BINARY_SENSOR,
+    Platform.BUTTON,
     Platform.NUMBER,
     Platform.SELECT,
     Platform.SENSOR,
@@ -39,5 +40,8 @@ POLL_BLOCKS: tuple[tuple[int, int], ...] = (
 )
 
 REGISTER_PROGRAM_VERSION = 0
+REGISTER_SUPPLY_FILTER_USAGE = 86
+REGISTER_EXTRACT_FILTER_USAGE = 87
+REGISTER_FILTER_RESET = 88
 REGISTER_SETTINGS_WRITABLE = 76
 REGISTER_POWER_WRITABLE = 77

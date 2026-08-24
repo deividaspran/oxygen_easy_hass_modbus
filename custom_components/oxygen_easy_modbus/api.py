@@ -64,33 +64,24 @@ class OxygenModbusClient:
             return (await self._async_read(address, 1))[0]
 
     async def async_write_register(self, address: int, value: int) -> None:
-        """Write one register and verify it by reading it back."""
+        """Write one persistent register and verify it by reading it back."""
         async with self._lock:
             await self._async_connect()
             await self._async_wait_between_transactions()
-            try:
-                response = await self._client.write_register(
-                    address, value=value, device_id=self._device_id
-                )
-            except (ModbusException, OSError, TimeoutError) as err:
-                self._client.close()
-                raise OxygenModbusConnectionError(
-                    f"Unable to write register {address}"
-                ) from err
-            finally:
-                self._last_transaction = monotonic()
-
-            if response is None or response.isError():
-                raise OxygenModbusResponseError(
-                    f"Controller rejected register {address}: {response}"
-                )
-
+            await self._async_write(address, value)
             await self._async_wait_between_transactions()
             actual = (await self._async_read(address, 1))[0]
             if actual != value:
                 raise OxygenModbusWriteError(
                     f"Register {address} read back as {actual}, expected {value}"
                 )
+
+    async def async_write_command(self, address: int, value: int) -> None:
+        """Write a momentary command whose register may immediately self-clear."""
+        async with self._lock:
+            await self._async_connect()
+            await self._async_wait_between_transactions()
+            await self._async_write(address, value)
 
     async def async_test_connection(self) -> None:
         """Connect and read the documented firmware register."""
@@ -112,6 +103,24 @@ class OxygenModbusClient:
         if not connected:
             raise OxygenModbusConnectionError(
                 "Unable to connect to the Modbus converter"
+            )
+
+    async def _async_write(self, address: int, value: int) -> None:
+        try:
+            response = await self._client.write_register(
+                address, value=value, device_id=self._device_id
+            )
+        except (ModbusException, OSError, TimeoutError) as err:
+            self._client.close()
+            raise OxygenModbusConnectionError(
+                f"Unable to write register {address}"
+            ) from err
+        finally:
+            self._last_transaction = monotonic()
+
+        if response is None or response.isError():
+            raise OxygenModbusResponseError(
+                f"Controller rejected register {address}: {response}"
             )
 
     async def _async_read(self, address: int, count: int) -> list[int]:

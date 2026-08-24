@@ -33,6 +33,15 @@ class RegisterConversionTests(unittest.TestCase):
         self.assertEqual(registers.firmware_version(0x012C), "S001.44")
         self.assertIsNone(registers.firmware_version(None))
 
+    def test_filter_reset_confirmation(self) -> None:
+        """A reset must produce a present, lower usage reading."""
+        self.assertTrue(registers.filter_reset_confirmed(120, 0))
+        self.assertTrue(registers.filter_reset_confirmed(100, 80))
+        self.assertTrue(registers.filter_reset_confirmed(None, 5))
+        self.assertFalse(registers.filter_reset_confirmed(100, 100))
+        self.assertFalse(registers.filter_reset_confirmed(None, 50))
+        self.assertFalse(registers.filter_reset_confirmed(100, None))
+
 
 if __name__ == "__main__":
     unittest.main()

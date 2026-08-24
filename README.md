@@ -55,12 +55,18 @@ Assistant treats it as successful.
 ## Filter reminder
 
 When either filter reaches 100% usage, Home Assistant receives a persistent
-notification. It is dismissed automatically after both reported usages fall
-below 100%. The destructive filter-reset command is deliberately not exposed.
+notification showing the reported percentage. Oxygen advises that at 120% the
+controller enters an emergency mode and runs at 90% until filter maintenance is
+completed, so the notification should not be ignored.
+
+Supply, extract, and combined counter-reset buttons are provided. Replace the
+physical filter first, then press the corresponding button. The integration
+checks that the affected usage reading decreases before reporting success and
+dismisses the reminder automatically once both readings are below 100%.
 
 ## Safety and scope
 
-Factory reset, filter reset, serial-number registers, and undocumented alarm
+Factory reset, serial-number registers, and undocumented alarm
 registers are excluded. The integration polls in contiguous blocks and never
 reads the documented serial-number register range. Diagnostics redact the
 configured host and unique ID.
